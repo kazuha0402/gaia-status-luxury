@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b16">
+<title>GAIA MAIN STAGE</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#070b16;--paper2:#0d1220;--ink:#f4efe4;--ink2:#c9c2b4;--muted:#8a8376;--gold:#c9a66b;--gold2:#e4c88a;--teal:#3ecfc1;--warn:#d4a24a;--rule:color-mix(in oklab,var(--gold) 28%,transparent)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Zen Kaku Gothic New",sans-serif;overflow-x:clip}
+body{min-height:100dvh;background-image:radial-gradient(1200px 600px at 80% -10%,color-mix(in oklab,#3a2258 38%,transparent),transparent 60%),radial-gradient(800px 480px at 10% 0%,color-mix(in oklab,#1a2a4a 40%,transparent),transparent 55%)}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 48px}
+.welcome{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--gold2);margin:0}
+h1{font-family:"Cormorant Garamond",serif;font-size:48px;line-height:1;color:var(--gold2);margin:0;font-weight:600}
+.sub{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.18em;color:var(--ink2);margin-top:8px}
+.grid{display:grid;gap:14px}@media(min-width:900px){.grid{grid-template-columns:1.2fr 1fr}.span{grid-column:1/-1}}
+.card{border:1px solid var(--rule);border-radius:14px;background:color-mix(in oklab,var(--paper2) 78%,transparent);padding:18px;min-width:0}
+.k{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.22em;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.dot{width:7px;height:7px;border-radius:99px;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:p 2.2s ease-in-out infinite}
+@keyframes p{50%{opacity:.4}}
+.live{display:flex;align-items:center;gap:8px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--teal)}
+pre.ascii{margin:10px 0 0;font-family:"JetBrains Mono",monospace;font-size:10px;line-height:1.05;white-space:pre;overflow-x:auto;color:var(--gold)}
+pre.ascii.teal{color:var(--teal)}pre.ascii.warn{color:var(--warn)}
+pre.log{margin:12px 0 0;font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.55;white-space:pre-wrap;color:var(--ink2)}
+@media(min-width:768px){pre.ascii{font-size:13px}}
+h3{font-family:"Cormorant Garamond",serif;font-size:22px;color:var(--gold2);margin:0}
+.pill{display:inline-flex;border-radius:999px;background:color-mix(in oklab,var(--teal) 15%,transparent);color:var(--teal);padding:4px 10px;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700}
+.flow{display:grid;grid-template-columns:5.6rem 1fr;gap:8px;padding:8px;border-radius:8px;font-size:14px}
+.flow.now{background:color-mix(in oklab,var(--teal) 10%,transparent)}
+.tm{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--gold)}
+.warnbox{margin-top:12px;padding:12px;border-radius:8px;background:color-mix(in oklab,var(--warn) 12%,transparent);color:var(--warn);font-size:14px}
+footer{margin-top:22px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+</style></head><body>
+<div class="wrap">
+<header><p class="welcome">Welcome to</p><h1>GAIA</h1><p class="sub">STG-01 · MAIN · ASCII HUD</p></header>
+<div class="grid">
+<section class="card span"><div class="row"><span class="k">SYS.CLK</span><span class="live"><span class="dot"></span>LIVE · ACT 03/05</span></div><pre id="clk" class="ascii"></pre><pre id="spark" class="ascii teal"></pre></section>
+<section class="card"><span class="pill">LIVE · LUNARIA</span><div class="k" style="margin-top:16px">Δ DELAY</div><pre id="delay" class="ascii warn"></pre><div class="k" style="margin-top:14px">T− REMAIN</div><pre id="remain" class="ascii teal"></pre><pre id="bar" class="ascii teal"></pre><pre class="log">PLAN 21:10:00
+ETA  21:14:00
+GAP  00:06:00
+LAST 21:12:04  REC=SM-A</pre></section>
+<section class="card"><div class="row"><h3>リアルタイム更新</h3><span class="k">1Hz</span></div><pre id="log" class="log"></pre><pre id="box" class="ascii"></pre></section>
+<section class="card"><div class="row"><h3>これからの流れ</h3><span class="k">N=05</span></div><div id="flow"></div></section>
+<section class="card"><h3>注意</h3><div class="warnbox">最終記録からの沈黙<br><span id="sil" class="tm"></span></div><pre class="log">21:12:04　入口
+[入場] ゲートB 通過
+
+21:08:51　SM-A
+[進行] 転換完了</pre><p class="k" style="margin-top:12px;color:var(--teal)">TROUBLE n=00 · ERR 0 · WARN 0</p></section>
+</div><footer id="foot"></footer></div>
+<script>
+const G={0:[" ▄▀▀▄ "," █  █ "," █  █ "," █  █ "," ▀▄▄▀ "],1:["  ▄█  ","   █  ","   █  ","   █  ","  ▀▀▀ "],2:[" ▄▀▀▄ ","    █ ","  ▄▀  "," █    "," ▀▀▀▀ "],3:[" ▄▀▀▄ ","    █ ","  ▀▀▄ ","    █ "," ▀▄▄▀ "],4:[" █  █ "," █  █ "," ▀▀▀█ ","    █ ","    ▀ "],5:[" ▀▀▀▀ "," █    "," ▀▀▀▄ ","    █ "," ▀▄▄▀ "],6:[" ▄▀▀▄ "," █    "," █▀▀▄ "," █  █ "," ▀▄▄▀ "],7:[" ▀▀▀▀ ","    █ ","   █  ","  █   ","  █   "],8:[" ▄▀▀▄ "," █  █ "," ▄▀▀▄ "," █  █ "," ▀▄▄▀ "],9:[" ▄▀▀▄ "," █  █ "," ▀▄▄█ ","    █ "," ▀▄▄▀ "],":":["      ","  ▄   ","      ","  ▄   ","      "],"+":["      ","  ▄   "," ▀█▀  ","  ▀   ","      "],"-":["      ","      "," ▀▀▀  ","      ","      "]," ":["      ","      ","      ","      ","      "]};
+function ascii(t){const r=["","","","",""];for(const ch of t){const g=G[ch]||G[" "];for(let i=0;i<5;i++)r[i]+=g[i];}return r.join("\n")}
+function pad(n){return String(n).padStart(2,"0")}
+function spark(f){const w="▁▂▃▄▅▆▇█▇▆▅▄▃▂";let o="";for(let i=0;i<28;i++)o+=w[(i+f)%w.length];return o}
+function bar(ratio){const w=24,f=Math.round(Math.max(0,Math.min(1,ratio))*w);return "["+"#".repeat(f)+"-".repeat(w-f)+"] "+String(Math.round(ratio*100)).padStart(3," ")+"%"}
+const FLOW=[["21:10:00","LUNARIA",1],["21:40:00","転換",0],["21:46:00","NOCTURNE",0],["22:20:00","転換",0],["22:26:00","AURORA SET",0]];
+document.getElementById("flow").innerHTML=FLOW.map(([t,n,now])=>`<div class="flow${now?" now":""}"><span class="tm">${t}</span><span>${n}${now?' <span class="tm">T+00:04:00</span>':""}</span></div>`).join("");
+let sec=0;
+function tick(){const clock=`21:14:${pad(sec)}`;const remainSec=18*60-sec;const remain=`00:${pad(Math.floor(remainSec/60))}:${pad(remainSec%60)}`;const lines=[];for(let i=4;i>=0;i--){const s=(sec-i+60)%60;const kind=s%7===0?"PULL":s%5===0?"ETA ":"SYNC";const ok=s%11===0?"STALE":"OK  ";lines.push(`[21:14:${pad(s)}] ${kind}  clk=21:14:${pad(s)}  Δ=+00:04:00  ${ok}`);}
+document.getElementById("clk").textContent=ascii(clock);
+document.getElementById("spark").textContent=spark(sec);
+document.getElementById("delay").textContent=ascii("+00:04:00");
+document.getElementById("remain").textContent=ascii(remain);
+document.getElementById("bar").textContent=bar(remainSec/(18*60));
+document.getElementById("log").textContent=lines.join("\n");
+document.getElementById("box").textContent=`┌─ STG-01 ─────────────┐\n│ CLK ${clock}        │\n│ Δ   +00:04:00        │\n│ T−  ${remain}        │\n└──────────────────────┘`;
+document.getElementById("sil").textContent="SILENCE Δt = 00:01:"+pad((56+sec)%60);
+document.getElementById("foot").textContent="POLL 1s ASCII · LAST_OK 21:14:"+pad((sec+58)%60)+" · READONLY · DEMO";sec=(sec+1)%60;}
+tick();setInterval(tick,1000);
+</script></body></html>
